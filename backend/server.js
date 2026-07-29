@@ -13,9 +13,9 @@ connectDB();
 
 const app = express();
 
-// 🛠️ Enable CORS so your React frontend can communicate with this backend
+// 🛠️ Enable CORS so your React frontend (both localhost and Vercel) can communicate with this backend
 app.use(cors({
-    origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
+    origin: '*',
     credentials: true
 }));
 
@@ -33,8 +33,8 @@ app.get('/api/health', (req, res) => {
 // Serve static files from the React frontend build folder
 app.use(express.static(path.join(__dirname, '../frontend/dist')));
 
-// Handle React routing (returns index.html for any frontend routes like /login, /register, /dashboard)
-app.get('*', (req, res) => {
+// Handle React routing safely without path-to-regexp syntax errors
+app.get('(.*)', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/dist', 'index.html'));
 });
 
